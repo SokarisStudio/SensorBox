@@ -11,6 +11,10 @@ from Adafruit_I2C import Adafruit_I2C
 import RPi.GPIO as GPIO
 from smbus import SMBus
 
+print("STARTING")
+
+url = "http://sensors.vasily.onl/API/"
+
 time.sleep(30)
 
 TSL2561_Control = 0x80
@@ -346,7 +350,7 @@ def readandsend():
 #    else:
 #       print("Fail")
         
-    url = "http://sensors.vasily.onl/send_data.php?api_key=12345678"
+    url = "{}send_data.php?api_key=12345678".format(url)
 
     payload={'api_key':'12345678',
              'sensor_id':'1',
@@ -358,30 +362,31 @@ def readandsend():
              'value_sound':str(sound_v)+' db'}
 
     files=[]
-
     headers={}
 
-    response=requests.request("POST",url,headers=headers,data=payload,files=files)
-
-    print(response.text)
+    try:
+		response = requests.request("POST", url, headers=headers, data=payload, files=files)
+		print(response.text)
+	except:
+		print("no network")
 
 def watchdog():
-    url = "http://sensors.vasily.onl/send_log.php?api_key=12345678"
-    #url = "http://sensors.vasily.onl/send_log.php?"
+    url = "{}send_log.php?api_key=12345678".format(url)
 
     payload = {'api_key': '12345678','sensor_id':'1','code':'1','desription':'error_type:network_not_connected,id:null'}
 
     files = []
-
     headers = {}
 
-    response = requests.request("POST", url, headers=headers, data=payload, files=files)
-
-    print(response.text)
+	try:
+		response = requests.request("POST", url, headers=headers, data=payload, files=files)
+		print(response.text)
+	except:
+		print("no network")
 
 while True:
     
-    if '192' not in os.popen('ifconfig | grep 192').read():
+    if '172' not in os.popen('ifconfig | grep 172').read():
         watchdog()
         #print ('\n******* wifi is down, please restart.*******\n')
     else:
