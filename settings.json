@@ -1,0 +1,7 @@
+{
+	"sensor_id": 2,
+	"api_key": "12345678",
+	"base_url": "http://123.206.118.90/",
+	"network_mask": "192",
+	"upd_time": 60
+}
